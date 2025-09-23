@@ -1,22 +1,7 @@
-import { StatusBar } from "expo-status-bar";
-import { StyleSheet, Text, View } from "react-native";
+import React from "react";
+import { View } from "react-native";
+import WelcomeScreen from "./app/screens/WelcomeScreen";
 
 export default function App() {
-  console.log("App executed");
-
-  return (
-    <View style={styles.container}>
-      <Text>Welcome to Snowwhitee</Text>
-      <StatusBar style="auto" />
-    </View>
-  );
+  return <WelcomeScreen />;
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: "dodgerblue",
-    alignItems: "center",
-    justifyContent: "center",
-  },
-});
