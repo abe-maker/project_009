@@ -1,13 +1,14 @@
-// app/screens/MainScreen.js
 import React, { useEffect, useState } from "react";
 import { View, Text, Button, StyleSheet, Alert } from "react-native";
 import SwipeWrapper from "../components/SwipeWrapper";
 import { getHighscores, updateHighscore } from "../lib/api";
+import GameScreen from "./GameScreen";
 
 export default function MainScreen({ route, navigation }) {
   const { user } = route.params;
   const [currentScore, setCurrentScore] = useState(0);
   const [lastScore, setLastScore] = useState(0);
+  const [startGame, setStartGame] = useState(false);
 
   useEffect(() => {
     loadHighscores();
@@ -28,32 +29,49 @@ export default function MainScreen({ route, navigation }) {
     }
   };
 
-  const handleStartGame = async () => {
-    const newScore = currentScore + 10; // Beispiel: Score erhöhen
+  const handleStartGame = () => {
+    setStartGame(true); // GameScreen anzeigen
+  };
+
+  const handleGameOver = async (finalScore) => {
+    setStartGame(false); // GameScreen ausblenden
+
     try {
+      // Score in Appwrite speichern
       await updateHighscore(user.$id, {
-        score: newScore,
+        score: finalScore,
         lastScore: currentScore,
       });
+
       setLastScore(currentScore);
-      setCurrentScore(newScore);
-      Alert.alert("Spiel gestartet!", `Neuer Score: ${newScore}`);
+      setCurrentScore(finalScore);
+
+      Alert.alert("Spiel beendet", `Dein Score: ${finalScore}`);
     } catch (err) {
-      Alert.alert("Fehler", err.message);
+      Alert.alert("Fehler beim Speichern des Scores", err.message);
     }
   };
 
   return (
     <SwipeWrapper navigation={navigation} user={user}>
       <View style={styles.container}>
-        <Text style={styles.title}>SNOWWHITE</Text>
-        <Text style={styles.welcome}>
-          Willkommen, {user.surname} {user.familyname}!
-        </Text>
-        <Button title="Spiel starten" onPress={handleStartGame} />
-        <Text style={styles.score}>
-          Aktueller Highcore: {currentScore} | Letzter Score: {lastScore}
-        </Text>
+        {!startGame ? (
+          <>
+            <Text style={styles.title}>SNOWWHITE</Text>
+            <Text style={styles.welcome}>
+              Willkommen, {user.surname} {user.familyname}!
+            </Text>
+            <Button title="Spiel starten" onPress={handleStartGame} />
+            <Text style={styles.score}>
+              Aktueller Highscore: {currentScore} | Letzter Score: {lastScore}
+            </Text>
+          </>
+        ) : (
+          <GameScreen
+            playerName={`${user.surname} ${user.familyname}`}
+            onGameOver={handleGameOver}
+          />
+        )}
       </View>
     </SwipeWrapper>
   );

@@ -53,13 +53,17 @@ const styles = StyleSheet.create({
   title: {
     fontSize: 24,
     fontWeight: "bold",
-    marginBottom: 20,
+    marginBottom: 30,
+    marginTop: "20%",
     textAlign: "center",
   },
   item: {
     paddingVertical: 10,
+    paddingHorizontal: "6%",
     borderBottomWidth: 1,
     borderBottomColor: "#ccc",
   },
-  itemText: { fontSize: 18 },
+  itemText: {
+    fontSize: 14,
+  },
 });

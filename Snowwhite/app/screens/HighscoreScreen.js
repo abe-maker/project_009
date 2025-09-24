@@ -57,13 +57,15 @@ const styles = StyleSheet.create({
   title: {
     fontSize: 24,
     fontWeight: "bold",
-    marginBottom: 20,
+    marginBottom: 30,
     textAlign: "center",
+    marginTop: "20%",
   },
   item: {
     paddingVertical: 10,
     borderBottomWidth: 1,
     borderBottomColor: "#ccc",
+    paddingHorizontal: "6%",
   },
   itemText: { fontSize: 18 },
 });
