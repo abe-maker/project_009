@@ -1,8 +1,10 @@
+// app/screens/HighscoreScreen.js
 import React, { useEffect, useState } from "react";
 import { View, Text, FlatList, StyleSheet, Alert } from "react-native";
+import SwipeWrapper from "../components/SwipeWrapper";
 import { getHighscores } from "../lib/api";
 
-export default function HighscoreScreen({ route }) {
+export default function HighscoreScreen({ route, navigation }) {
   const { user } = route.params;
   const [highscores, setHighscores] = useState([]);
 
@@ -17,7 +19,7 @@ export default function HighscoreScreen({ route }) {
         .filter(
           (h) => h.surname === user.surname && h.familyname === user.familyname
         )
-        .sort((a, b) => new Date(b.$createdAt) - new Date(a.$createdAt));
+        .sort((a, b) => b.score - a.score);
       setHighscores(userScores);
     } catch (err) {
       Alert.alert("Fehler", err.message);
@@ -34,17 +36,19 @@ export default function HighscoreScreen({ route }) {
   );
 
   return (
-    <View style={styles.container}>
-      <Text style={styles.title}>
-        Highscores von {user.surname} {user.familyname}
-      </Text>
-      <FlatList
-        data={highscores}
-        keyExtractor={(item) => item.$id}
-        renderItem={renderItem}
-        contentContainerStyle={{ paddingBottom: 100 }}
-      />
-    </View>
+    <SwipeWrapper navigation={navigation} user={user}>
+      <View style={styles.container}>
+        <Text style={styles.title}>
+          {user.surname} {user.familyname} – Highscores
+        </Text>
+        <FlatList
+          data={highscores}
+          keyExtractor={(item) => item.$id}
+          renderItem={renderItem}
+          contentContainerStyle={{ paddingBottom: 100 }}
+        />
+      </View>
+    </SwipeWrapper>
   );
 }
 

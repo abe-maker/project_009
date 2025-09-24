@@ -1,8 +1,11 @@
+// app/screens/LeaderboardScreen.js
 import React, { useEffect, useState } from "react";
 import { View, Text, FlatList, StyleSheet, Alert } from "react-native";
+import SwipeWrapper from "../components/SwipeWrapper";
 import { getHighscores } from "../lib/api";
 
-export default function LeaderboardScreen() {
+export default function LeaderboardScreen({ route, navigation }) {
+  const { user } = route.params;
   const [highscores, setHighscores] = useState([]);
 
   useEffect(() => {
@@ -12,7 +15,6 @@ export default function LeaderboardScreen() {
   const loadHighscores = async () => {
     try {
       const list = await getHighscores();
-      // Top 20 Scores, absteigend sortiert
       const topScores = list.documents
         .sort((a, b) => b.score - a.score)
         .slice(0, 20);
@@ -32,15 +34,17 @@ export default function LeaderboardScreen() {
   );
 
   return (
-    <View style={styles.container}>
-      <Text style={styles.title}>Global Leaderboard</Text>
-      <FlatList
-        data={highscores}
-        keyExtractor={(item) => item.$id}
-        renderItem={renderItem}
-        contentContainerStyle={{ paddingBottom: 100 }}
-      />
-    </View>
+    <SwipeWrapper navigation={navigation} user={user}>
+      <View style={styles.container}>
+        <Text style={styles.title}>Global Leaderboard</Text>
+        <FlatList
+          data={highscores}
+          keyExtractor={(item) => item.$id}
+          renderItem={renderItem}
+          contentContainerStyle={{ paddingBottom: 100 }}
+        />
+      </View>
+    </SwipeWrapper>
   );
 }
 

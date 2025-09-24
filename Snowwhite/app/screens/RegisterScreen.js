@@ -1,3 +1,4 @@
+// app/screens/RegisterScreen.js
 import React, { useState } from "react";
 import { View, Text, TextInput, Button, StyleSheet, Alert } from "react-native";
 import { registerUser } from "../lib/api";
@@ -7,16 +8,15 @@ export default function RegisterScreen({ navigation }) {
   const [familyname, setFamilyname] = useState("");
 
   const handleRegister = async () => {
+    if (!surname || !familyname) {
+      Alert.alert("Fehler", "Bitte alle Felder ausfüllen!");
+      return;
+    }
     try {
-      if (!surname || !familyname) {
-        Alert.alert("Fehler", "Bitte alle Felder ausfüllen!");
-        return;
-      }
-
-      await registerUser(surname, familyname);
-
-      // Navigation zur MainScreen mit Benutzerinfo
-      navigation.replace("Main", { user: { surname, familyname } });
+      const userDoc = await registerUser(surname, familyname);
+      navigation.navigate("Main", {
+        user: { surname, familyname, $id: userDoc.$id },
+      });
     } catch (err) {
       Alert.alert("Fehler", err.message);
     }
